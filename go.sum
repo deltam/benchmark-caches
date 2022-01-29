@@ -1,0 +1,8 @@
+github.com/akyoto/cache v1.0.6 h1:5XGVVYoi2i+DZLLPuVIXtsNIJ/qaAM16XT0LaBaXd2k=
+github.com/akyoto/cache v1.0.6/go.mod h1:WfxTRqKhfgAG71Xh6E3WLpjhBtZI37O53G4h5s+3iM4=
+github.com/muesli/cache2go v0.0.0-20211005105910-8e46465cca4a h1:IZxQOY9gAiiGGuEdlOBnqaC3yumj8UvyQluBNqGP2Ek=
+github.com/muesli/cache2go v0.0.0-20211005105910-8e46465cca4a/go.mod h1:WERUkUryfUWlrHnFSO/BEUZ+7Ns8aZy7iVOGewxKzcc=
+github.com/patrickmn/go-cache v2.1.0+incompatible h1:HRMgzkcYKYpi3C8ajMPV8OFXaaRUnok+kx1WdO15EQc=
+github.com/patrickmn/go-cache v2.1.0+incompatible/go.mod h1:3Qf8kWWT7OJRJbdiICTKqZju1ZixQ/KpMGzzAfe6+WQ=
+github.com/rif/cache2go v1.0.0 h1:DhvZcxXvsuD9ExQ6ZO6f/sOE66OaAQIwB8Mfumap4w4=
+github.com/rif/cache2go v1.0.0/go.mod h1:reDqW0mGufW34CGJ1tvjMobI1BY3dCTxA0ZWdbvm06s=
