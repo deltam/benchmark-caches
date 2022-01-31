@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -10,93 +11,79 @@ import (
 	cache1 "github.com/rif/cache2go"
 )
 
-func BenchmarkSet(b *testing.B) {
-	b.Run("rif/cache2go", func(b *testing.B) {
-		c := cache1.New(10, time.Second)
+func key(i int) string { return fmt.Sprintf("key-%d", i) }
 
-		b.StartTimer()
+func BenchmarkRifCache2go(b *testing.B) {
+	c := cache1.New(10, time.Minute)
+
+	b.Run("Set", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			c.Set("hoge", 123)
+			c.Set(key(i), 123)
 		}
 	})
 
-	b.Run("muesli/cache2go", func(b *testing.B) {
-		c := cache2.Cache("mycache")
-
-		b.StartTimer()
+	b.Run("Get", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			c.Add("hoge", time.Second, 123)
-		}
-	})
-
-	b.Run("patrickmn/go-cache", func(b *testing.B) {
-		c := cache3.New(time.Second, time.Minute)
-
-		b.StartTimer()
-		for i := 0; i < b.N; i++ {
-			c.Set("hoge", 123, cache3.DefaultExpiration)
-		}
-	})
-
-	b.Run("akyoto/cache", func(b *testing.B) {
-		c := cache4.New(time.Second)
-
-		b.StartTimer()
-		for i := 0; i < b.N; i++ {
-			c.Set("hoge", 123, time.Second)
+			_, ok := c.Get(key(i))
+			if !ok {
+				c.Set(key(i), 123)
+			}
 		}
 	})
 }
 
-func BenchmarkGet(b *testing.B) {
-	b.Run("rif/cache2go", func(b *testing.B) {
-		c := cache1.New(10, time.Second)
+func BenchmarkMuesliCache2go(b *testing.B) {
+	c := cache2.Cache("mycache")
 
-		c.Set("hoge", 123)
-		b.StartTimer()
+	b.Run("Set", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			_, ok := c.Get("hoge")
-			if !ok {
-				c.Set("hoge", 123)
-			}
+			c.Add(key(i), time.Minute, 123)
 		}
 	})
 
-	b.Run("muesli/cache2go", func(b *testing.B) {
-		c := cache2.Cache("mycache")
-
-		c.Add("hoge", time.Second, 123)
-		b.StartTimer()
+	b.Run("Get", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			_, err := c.Value("hoge")
+			_, err := c.Value(key(i))
 			if err != nil {
-				c.Add("hoge", time.Second, 123)
+				c.Add(key(i), time.Minute, 123)
 			}
 		}
 	})
+}
 
-	b.Run("patrickmn/go-cache", func(b *testing.B) {
-		c := cache3.New(time.Second, time.Minute)
-		c.Set("hoge", 123, cache3.DefaultExpiration)
+func BenchmarkPatrickmnGoCache(b *testing.B) {
+	c := cache3.New(time.Minute, time.Minute)
 
-		b.StartTimer()
+	b.Run("Set", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			_, ok := c.Get("hoge")
-			if !ok {
-				c.Set("hoge", 123, cache3.DefaultExpiration)
-			}
+			c.Set(key(i), 123, cache3.DefaultExpiration)
 		}
 	})
 
-	b.Run("akyoto/cache", func(b *testing.B) {
-		c := cache4.New(time.Second)
-		c.Set("hoge", 123, time.Second)
-
-		b.StartTimer()
+	b.Run("Get", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			_, ok := c.Get("hoge")
+			_, ok := c.Get(key(i))
 			if !ok {
-				c.Set("hoge", 123, time.Second)
+				c.Set(key(i), 123, cache3.DefaultExpiration)
+			}
+		}
+	})
+}
+
+func BenchmarkAkyotoCache(b *testing.B) {
+	c := cache4.New(time.Minute)
+
+	b.Run("Set", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			c.Set(key(i), 123, time.Minute)
+		}
+	})
+
+	b.Run("Get", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			_, ok := c.Get(key(i))
+			if !ok {
+				c.Set(key(i), 123, time.Minute)
 			}
 		}
 	})
