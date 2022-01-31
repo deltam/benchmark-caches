@@ -7,6 +7,7 @@ import (
 	"time"
 
 	cache4 "github.com/akyoto/cache"
+	cache6 "github.com/coocood/freecache"
 	cache5 "github.com/dgraph-io/ristretto"
 	cache2 "github.com/muesli/cache2go"
 	cache3 "github.com/patrickmn/go-cache"
@@ -115,6 +116,28 @@ func BenchmarkRistretto(b *testing.B) {
 			v, ok := c.Get(key(i))
 			if !ok {
 				_ = v
+			}
+		}
+	})
+}
+
+func BenchmarkFreecache(b *testing.B) {
+	// In bytes, where 1024 * 1024 represents a single Megabyte, and 100 * 1024*1024 represents 100 Megabytes.
+	const cacheSize = 100 * 1024 * 1024
+
+	c := cache6.NewCache(cacheSize)
+
+	b.Run("Set", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			c.Set([]byte(key(i)), []byte("123"), 600)
+		}
+	})
+
+	b.Run("Get", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			_, err := c.Get([]byte(key(i)))
+			if err != nil {
+				log.Println(err)
 			}
 		}
 	})
